@@ -10,6 +10,8 @@
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.10",
+    "@types/node": "^22.18.0",
+    "dotenv": "16.4.7",
     "prettier": "^3.6.2",
     "turbo": "^2.5.6",
     "typescript": "5.9.2"
@@ -21,5 +23,9 @@
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.x",
     "@nestjs/config": "^4.0.2"
-  }
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
 }

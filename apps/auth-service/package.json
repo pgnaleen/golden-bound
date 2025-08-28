@@ -11,22 +11,29 @@
     "lint": "eslint . --ext .ts"
   },
   "dependencies": {
+    "@golden-bound/common": "workspace:*",
     "@aws-sdk/client-cognito-identity-provider": "^3.x",
-    "@nestjs/common": "^10.0.0",
-    "@nestjs/core": "^10.0.0",
-    "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/common": "^11.0.1",
+    "@nestjs/core": "^11.0.1",
+    "@nestjs/platform-express": "^11.0.1",
     "@nestjs/config": "^4.0.2",
+    "@nestjs/swagger": "^11.0.6",
     "class-validator": "^0.14.0",
     "class-transformer": "^0.5.1",
+    "dotenv": "^16.4.7",
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
-    "@nestjs/cli": "^10.0.0",
-    "@nestjs/testing": "^10.0.0",
+    
+    "@golden-bound/common": "workspace:*",
+    "@types/node": "22.18.0",
+    "@nestjs/cli": "^11.0.1",
+    "@nestjs/testing": "^11.0.1",
     "typescript": "^5.0.0",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
     "eslint": "^7.0.0",
+    "dotenv": "^16.4.7",
     "eslint-config-prettier": "^8.0.0",
     "eslint-plugin-prettier": "^4.0.0"
   },
