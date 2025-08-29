@@ -12,8 +12,8 @@ import {
 } from '@aws-sdk/client-cognito-identity-provider';
 import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
 import configuration from './configuration';
-import { generateSecretHash } from '@golden-bound/common/src/util';
-import { IResponse, IAuthToken } from '@golden-bound/common/src/interface';
+import { generateSecretHash } from '@golden-bound/common';
+import { IResponse, IAuthToken } from '@golden-bound/common';
 import {
   ConfirmEmailRequestDto,
   ResendConfirmationCodeRequestDto,

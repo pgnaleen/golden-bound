@@ -14,7 +14,7 @@ import {
   SignUpRequestDto,
   SignInRequestDto,
 } from './dto';
-import { IResponse, IAuthToken } from '@golden-bound/common/src/interface';
+import { IResponse, IAuthToken } from '@golden-bound/common';
 
 @Controller('auth')
 export class AuthController {

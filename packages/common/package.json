@@ -7,6 +7,12 @@
     "build": "tsc",
     "dev": "tsc -w"
   },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
   "devDependencies": {
     "typescript": "^5.9.2",
     "@types/node": "^22.18.0"
