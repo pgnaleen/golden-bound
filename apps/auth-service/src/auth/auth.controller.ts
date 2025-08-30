@@ -9,7 +9,7 @@ import {
 import { AuthService } from './auth.service';
 import { ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import {
-  ConfirmEmailRequestDto,
+  ConfirmUserRequestDto,
   ResendConfirmationCodeRequestDto,
   SignUpRequestDto,
   SignInRequestDto,
@@ -42,23 +42,23 @@ export class AuthController {
     status: HttpStatus.OK,
     description: 'Email is verified',
   })
-  @ApiBody({ type: ConfirmEmailRequestDto })
+  @ApiBody({ type: ConfirmUserRequestDto })
   @HttpCode(HttpStatus.OK)
   async ConfirmEmail(
-    @Body() confirmAccountDto: ConfirmEmailRequestDto,
+    @Body() confirmAccountDto: ConfirmUserRequestDto,
   ): Promise<IResponse> {
-    return await this.authService.confirmUserEmail(confirmAccountDto);
+    return await this.authService.confirmUser(confirmAccountDto);
   }
 
   @Post('resend-confirmation-code')
   @ApiOperation({ summary: 'Resent Confirmation Code' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Confirmation code is resent',
+    description: 'Confirmation code has been resent',
   })
   @ApiBody({ type: ResendConfirmationCodeRequestDto })
   @HttpCode(HttpStatus.OK)
-  async verifyEmail(
+  async resendEmailCode(
     @Body() resendConfirmEmailDto: ResendConfirmationCodeRequestDto,
   ): Promise<IResponse> {
     // TODO: Need to check email is already confirmed or not

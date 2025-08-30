@@ -30,7 +30,23 @@ export class SignUpRequestDto {
   })
   @IsNotEmpty({ message: 'Last name is required' })
   @IsString({ message: 'Last name must be a valid string' })
-  lastName!: string;
+  familyName!: string;
+
+  @ApiProperty({
+    description: 'Nick Name of the user',
+    example: 'Doe',
+  })
+  @IsNotEmpty({ message: 'Nick name is required' })
+  @IsString({ message: 'Nick name must be a valid string' })
+  nickName!: string;
+
+  @ApiProperty({
+    description: 'Gender of the user',
+    example: 'male/female',
+  })
+  @IsNotEmpty({ message: 'Gender is required' })
+  @IsString({ message: 'Gender must be a valid string' })
+  gender!: string;
 
   @ApiProperty({
     description: 'Password for the user',
@@ -41,4 +57,12 @@ export class SignUpRequestDto {
   @IsNotEmpty({ message: 'Password is required.' })
   @MinLength(8, { message: 'Password must be at least 8 characters long' })
   password!: string;
+
+  @ApiProperty({
+    description: 'Given Name of the userr',
+    example: 'GivenName',
+  })
+  @IsNotEmpty({ message: 'Given name is required' })
+  @IsString({ message: 'Given name must be a valid string' })
+  givenName!: string;
 }
