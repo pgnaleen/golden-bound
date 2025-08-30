@@ -1,25 +1,11 @@
-import { webcrypto } from 'node:crypto';
+import { createHmac } from 'crypto';
 
-export const generateSecretHash = async (
+export const generateSecretHash = (
   identifier: string,
   clientId: string,
   clientSecret: string,
-): Promise<string> => {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(identifier + clientId);
-  const key = await webcrypto.subtle.importKey(
-    'raw',
-    encoder.encode(clientSecret),
-    { name: 'HMAC', hash: 'SHA-256' },
-    false,
-    ['sign']
-  );
-  
-  const signature = await webcrypto.subtle.sign(
-    'HMAC',
-    key,
-    data
-  );
-
-  return Buffer.from(signature).toString('base64');
+): string => {
+  return createHmac('sha256', clientSecret)
+    .update(identifier + clientId)
+    .digest('base64');
 };
