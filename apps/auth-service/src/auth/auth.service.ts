@@ -15,7 +15,7 @@ import configuration from './configuration';
 import { generateSecretHash } from '@golden-bound/common';
 import { IResponse, IAuthToken } from '@golden-bound/common';
 import {
-  ConfirmEmailRequestDto,
+  ConfirmUserRequestDto,
   ResendConfirmationCodeRequestDto,
   SignInRequestDto,
   SignUpRequestDto,
@@ -37,7 +37,7 @@ export class AuthService {
   async signUp(
     signUpRequestDto: SignUpRequestDto,
   ): Promise<{ emailConfirmed: boolean }> {
-    const { username, email, password, firstName, lastName } = signUpRequestDto;
+    const { username, email, password, firstName, familyName, givenName, nickName, gender } = signUpRequestDto;
     if (email) {
       const IsUserExistOnEmail = await this.checkUserExists(email);
 
@@ -48,39 +48,62 @@ export class AuthService {
       }
     }
 
+    const currentUnixTimestamp = Math.floor(Date.now() / 1000).toString();
     const params: SignUpCommandInput = {
       ClientId: this.clientId,
       SecretHash: this.generateSecret(username),
       Username: username,
-      // Email: email,
       Password: password,
       UserAttributes: [
-        { Name: 'given_name', Value: firstName },
-        { Name: 'family_name', Value: lastName },
-        ...(email ? [{ Name: 'email', Value: email }] : []),
+        { Name: 'given_name', Value: givenName },
+        { Name: 'family_name', Value: familyName },
+        { Name: 'gender', Value: gender },
+        { Name: 'nickname', Value: nickName },
+        { Name: 'updated_at', Value: currentUnixTimestamp },
+        { Name: 'email', Value: email },
+        { Name: 'name', Value: firstName + ' ' + familyName },
+        // { Name: 'custom:customAttribute', Value: 'customValue' },
       ],
     };
 
-    const signUpResponse = await this.cognitoClient.send(
-      new SignUpCommand(params),
-    );
+    try {
+        const signUpResponse = await this.cognitoClient.send(
+          new SignUpCommand(params),
+        );
 
-    if (!signUpResponse || !signUpResponse.UserSub) {
-      throw new BadRequestException('Failed to create user account');
-    }
+        if (!signUpResponse || !signUpResponse.UserSub) {
+          throw new BadRequestException('Failed to create user account');
+        }
 
-    return { emailConfirmed: Boolean(signUpResponse.UserConfirmed) };
+        return { emailConfirmed: Boolean(signUpResponse.UserConfirmed) };
+
+      } catch (error) {
+        console.log('Error during singup:', error);
+
+        if (error && typeof error === 'object' && 'name' in error
+          && (error as any).name === 'UsernameExistsException') {
+            throw new BadRequestException('User already exists on given username',);
+        }
+      }
+
+    throw new BadRequestException('Failed to create user account');
   }
 
-  async confirmUserEmail(data: ConfirmEmailRequestDto): Promise<IResponse> {
+  async confirmUser(data: ConfirmUserRequestDto): Promise<IResponse> {
     const params: ConfirmSignUpCommandInput = {
       ClientId: this.clientId,
-      SecretHash: this.generateSecret(data.email),
-      Username: data.email,
+      SecretHash: this.generateSecret(data.username),
+      Username: data.username,
       ConfirmationCode: data.confirmationCode,
     };
 
-    await this.cognitoClient.send(new ConfirmSignUpCommand(params));
+    try {
+      await this.cognitoClient.send(new ConfirmSignUpCommand(params));
+    } catch (error) {
+      console.log('Error during confirmUser:', error);
+      throw new BadRequestException('Failed to confirm user account');
+    }
+
     return {
       status: {
         statusCode: HttpStatus.OK,
@@ -94,14 +117,20 @@ export class AuthService {
   ): Promise<IResponse> {
     const params: ResendConfirmationCodeCommandInput = {
       ClientId: this.clientId,
-      Username: data.email,
+      Username: data.username,
     };
 
     if (this.clientSecret) {
-      params.SecretHash = this.generateSecret(data.email);
+      params.SecretHash = this.generateSecret(data.username);
     }
 
-    await this.cognitoClient.send(new ResendConfirmationCodeCommand(params));
+    try {
+      await this.cognitoClient.send(new ResendConfirmationCodeCommand(params));
+    } catch (error) {
+      console.log('Error during resendConfirmationCode:', error);
+      throw new BadRequestException('Failed to resend confirmation code');
+    }
+
     return {
       status: {
         statusCode: HttpStatus.OK,
@@ -122,13 +151,20 @@ export class AuthService {
       },
     };
 
-    const { AuthenticationResult: authResult } = await this.cognitoClient.send(
-      new InitiateAuthCommand(params),
-    );
-    return {
-      accessToken: authResult?.AccessToken,
-      refreshToken: authResult?.RefreshToken,
-    };
+    try {
+        const { AuthenticationResult: authResult } = await this.cognitoClient.send(
+          new InitiateAuthCommand(params),
+        );
+        return {
+          accessToken: authResult?.AccessToken,
+          refreshToken: authResult?.RefreshToken,
+        };
+    }
+    catch (error) {
+      console.log('Error during signIn:', error);
+      throw new BadRequestException('Invalid email or password');
+    }
+
   }
 
   async checkUserExists(email: string): Promise<boolean> {
@@ -140,11 +176,14 @@ export class AuthService {
 
       await this.cognitoClient.send(new AdminGetUserCommand(params));
       return true;
+
     } catch (error) {
       if (error && typeof error === 'object' && 'name' in error 
         && (error as any).name === 'UserNotFoundException') {
         return false;
       }
+
+      console.log('Error during checkUserExists:', error);
       throw error;
     }
   }

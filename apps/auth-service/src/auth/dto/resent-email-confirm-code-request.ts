@@ -3,9 +3,9 @@ import { IsNotEmpty } from 'class-validator';
 
 export class ResendConfirmationCodeRequestDto {
   @ApiProperty({
-    description: 'Email',
-    example: 'user@example.com',
+    description: 'Username of the user',
+    example: 'johndoe',
   })
-  @IsNotEmpty({ message: 'Email is required.' })
-  email!: string;
+  @IsNotEmpty({ message: 'Username is required.' })
+  username!: string;
 }
