@@ -115,6 +115,10 @@ export class AuthService {
   async resendConfirmationCode(
     data: ResendConfirmationCodeRequestDto,
   ): Promise<IResponse> {
+
+    
+        // TODO: Need to check email is already confirmed or not
+        // If completed then send a message email already confirmed
     const params: ResendConfirmationCodeCommandInput = {
       ClientId: this.clientId,
       Username: data.username,
