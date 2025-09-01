@@ -61,8 +61,6 @@ export class AuthController {
   async resendEmailCode(
     @Body() resendConfirmEmailDto: ResendConfirmationCodeRequestDto,
   ): Promise<IResponse> {
-    // TODO: Need to check email is already confirmed or not
-    // If completed then send a message email already confirmed
     return this.authService.resendConfirmationCode(resendConfirmEmailDto);
   }
 
