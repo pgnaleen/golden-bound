@@ -11,7 +11,7 @@
     "lint": "eslint . --ext .ts"
   },
   "dependencies": {
-    "@golden-bound/common": "workspace:*",
+    "@golden-bound/common": "*",
     "@aws-sdk/client-cognito-identity-provider": "^3.x",
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
@@ -25,15 +25,14 @@
   },
   "devDependencies": {
     
-    "@golden-bound/common": "workspace:*",
+    "@golden-bound/common": "*",
     "@types/node": "22.18.0",
     "@nestjs/cli": "^11.0.1",
     "@nestjs/testing": "^11.0.1",
     "typescript": "^5.0.0",
     "ts-node": "^10.9.1",
-    "ts-node-dev": "^2.0.0",
     "eslint": "^9.32.0",
-    "dotenv": "^16.4.7",
+    "dotenv": "^16.6.1",
     "eslint-config-prettier": "^8.0.0",
     "eslint-plugin-prettier": "^4.0.0"
   },
